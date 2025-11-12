@@ -28,3 +28,25 @@ DISPATCHARR_API_PASS="Cpfc0603!"
 #   "UK Line %"         -> anything starting with "UK Line "
 #   "UK %,DE %"         -> multiple patterns
 XC_NAMES="%"
+
+# Feature toggles
+VOD_EXPORT_MOVIES="true"
+VOD_EXPORT_SERIES="true"
+
+# -------- Optional NFO + TMDB metadata --------
+# Enable writing NFO files (movies, tvshow, episodes)
+ENABLE_NFO="true"
+# When false, existing NFOs are kept; when true, we overwrite them.
+VOD_OVERWRITE_NFO="false"
+
+# TMDB (recommended). If empty, NFOs will be written with whatever metadata we have
+# from Dispatcharr/provider-info (title/year/plot/etc.) and skip TMDB lookups.
+TMDB_API_KEY=""
+
+# Preferred metadata language (TMDB)
+NFO_LANG="en-US"
+
+# Write NFO types (all true is safe for Emby)
+NFO_WRITE_MOVIE="true"
+NFO_WRITE_TVSHOW="true"
+NFO_WRITE_EPISODE="true"
