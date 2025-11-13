@@ -411,12 +411,22 @@ def provider_info_cached(base: str, token: str, account_name: str, series_id: in
         return {}
     try:
         if DRY_RUN:
-            log(f"[dry-run] Would write provider-info cache for series_id={series_id} ({account_name}) to {cache_path}")
+            # Only log provider-info cache writes at DEBUG/VERBOSE to avoid noisy output at INFO.
+            if LOG_LEVEL in ("DEBUG", "VERBOSE"):
+                log(
+                    f"[dry-run] Would write provider-info cache for series_id={series_id} "
+                    f"({account_name}) to {cache_path}"
+                )
         else:
-            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            mkdir(cache_dir)
             with open(cache_path, "w", encoding="utf-8") as f:
-                json.dump(info, f)
-            log(f"Saved provider-info cache for series_id={series_id} ({account_name}) to {cache_path}")
+                json.dump(data, f)
+            # Same here: keep this quiet at INFO, only show at higher verbosity.
+            if LOG_LEVEL in ("DEBUG", "VERBOSE"):
+                log(
+                    f"Saved provider-info cache for series_id={series_id} "
+                    f"({account_name}) to {cache_path}"
+                )
     except Exception as e:
         log(f"Failed to write provider-info cache for series_id={series_id} ({account_name}): {e}")
     return info
