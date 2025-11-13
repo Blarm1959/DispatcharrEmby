@@ -599,6 +599,225 @@ def normalize_provider_info(info: dict) -> dict:
     return {"seasons": norm_seasons}
 
 
+def get_series_info_xc(server_url: str, xc_user: str, xc_pass: str, series_id: int) -> dict:
+    """
+    Call XC's get_series_info directly.
+
+    Returns either:
+      - a dict JSON body (usual case), or
+      - {"__status_code": int, "__text": raw_html} on error.
+    """
+    base = (server_url or "").rstrip("/")
+    if not base:
+        return {}
+    url = (
+        f"{base}/player_api.php"
+        f"?username={xc_user}"
+        f"&password={xc_pass}"
+        f"&action=get_series_info"
+        f"&series_id={series_id}"
+    )
+    headers = {"User-Agent": HTTP_USER_AGENT}
+    try:
+        r = requests.get(url, timeout=60, headers=headers)
+    except requests.RequestException as e:
+        log(f"XC get_series_info error for series_id={series_id}: {e}")
+        return {"__status_code": 0, "__text": str(e)}
+
+    try:
+        data = r.json()
+        if isinstance(data, dict):
+            return data
+        return {"__status_code": r.status_code, "__data": data}
+    except ValueError:
+        return {"__status_code": r.status_code, "__text": r.text}
+
+
+def build_provider_info_from_xc(xc_info: dict) -> dict:
+    """
+    Convert XC get_series_info output to our normalized provider-info-like structure:
+
+      { "seasons": [ { "number": N, "episodes": [ ... ] }, ... ] }
+
+    So normalize_provider_info() can work with it.
+    """
+    if not isinstance(xc_info, dict):
+        return {}
+
+    episodes = xc_info.get("episodes")
+    if not episodes:
+        return {}
+
+    seasons: list[dict] = []
+
+    # Common XC layout: episodes = { "1": [ep...], "2": [ep...] }
+    if isinstance(episodes, dict):
+        for season_key, ep_list in episodes.items():
+            try:
+                s_num = int(season_key)
+            except Exception:
+                continue
+            if s_num <= 0:
+                continue
+            if not isinstance(ep_list, list):
+                continue
+
+            norm_eps: list[dict] = []
+            for e in ep_list:
+                if not isinstance(e, dict):
+                    continue
+
+                ep_num = (
+                    e.get("episode_num")
+                    or e.get("episode_number")
+                    or e.get("num")
+                    or 0
+                )
+                try:
+                    ep_num = int(ep_num)
+                except Exception:
+                    ep_num = 0
+                if not ep_num:
+                    continue
+
+                title = (
+                    e.get("title")
+                    or e.get("name")
+                    or e.get("episode_name")
+                    or f"Episode {ep_num}"
+                )
+                stream_id = e.get("id") or e.get("stream_id")
+                cont = e.get("container_extension") or e.get("container") or "m3u8"
+                direct = e.get("direct_url") or e.get("url") or ""
+
+                norm_eps.append(
+                    {
+                        "episode_num": ep_num,
+                        "title": title,
+                        "stream_id": stream_id,
+                        "container_extension": cont,
+                        "direct_url": direct,
+                        "raw": e,
+                    }
+                )
+
+            if norm_eps:
+                seasons.append({"number": s_num, "episodes": norm_eps})
+
+    # Less common: episodes is a flat list, no seasons
+    elif isinstance(episodes, list):
+        norm_eps: list[dict] = []
+        for e in episodes:
+            if not isinstance(e, dict):
+                continue
+            ep_num = (
+                e.get("episode_num")
+                or e.get("episode_number")
+                or e.get("num")
+                or 0
+            )
+            try:
+                ep_num = int(ep_num)
+            except Exception:
+                ep_num = 0
+            if not ep_num:
+                continue
+            title = (
+                e.get("title")
+                or e.get("name")
+                or e.get("episode_name")
+                or f"Episode {ep_num}"
+            )
+            stream_id = e.get("id") or e.get("stream_id")
+            cont = e.get("container_extension") or e.get("container") or "m3u8"
+            direct = e.get("direct_url") or e.get("url") or ""
+            norm_eps.append(
+                {
+                    "episode_num": ep_num,
+                    "title": title,
+                    "stream_id": stream_id,
+                    "container_extension": cont,
+                    "direct_url": direct,
+                    "raw": e,
+                }
+            )
+        if norm_eps:
+            seasons.append({"number": 1, "episodes": norm_eps})
+
+    return {"seasons": seasons} if seasons else {}
+
+
+def get_normalized_provider_info_with_fallback(
+    base: str,
+    token: str,
+    account: dict,
+    series: dict,
+) -> dict:
+    """
+    1) Try Dispatcharr provider-info (cached) and normalize.
+    2) If no episodes found, fallback to XC get_series_info using the
+       account's server_url / username / password.
+    """
+    account_id = account.get("id")
+    account_name = account.get("name") or f"Account-{account_id}"
+    series_id = series.get("id")
+
+    # Step 1: Dispatcharr provider-info (+ cache) as today
+    provider_raw = provider_info_cached(base, token, account_name, series_id)
+    provider_norm = normalize_provider_info(provider_raw)
+    seasons = provider_norm.get("seasons") or []
+    has_eps = any((s.get("episodes") for s in seasons))
+
+    if has_eps:
+        # Happy path – Dispatcharr already has episodes
+        return provider_norm
+
+    # Step 2: XC fallback if we have credentials
+    server_url = account.get("server_url") or ""
+    xc_user = account.get("username") or account.get("user") or ""
+    xc_pass = account.get("password") or account.get("pass") or ""
+
+    if not (server_url and xc_user and xc_pass):
+        log(
+            f"No XC credentials/server_url for account '{account_name}', "
+            f"cannot fallback for series_id={series_id}"
+        )
+        return provider_norm
+
+    log(
+        f"Dispatcharr provider-info had no episodes for series_id={series_id} "
+        f"({account_name}) – attempting XC get_series_info fallback."
+    )
+
+    xc_info = get_series_info_xc(server_url, xc_user, xc_pass, series_id)
+    if not isinstance(xc_info, dict) or "episodes" not in xc_info:
+        status = xc_info.get("__status_code") if isinstance(xc_info, dict) else None
+        if status:
+            log(
+                f"XC get_series_info for series_id={series_id} "
+                f"returned status={status} with no 'episodes' key."
+            )
+        else:
+            log(f"XC get_series_info for series_id={series_id} returned no 'episodes' key.")
+        return provider_norm
+
+    provider_from_xc = build_provider_info_from_xc(xc_info)
+    seasons_xc = provider_from_xc.get("seasons") or []
+    if any((s.get("episodes") for s in seasons_xc)):
+        log(
+            f"XC fallback succeeded for series_id={series_id} ({account_name}) – "
+            f"using episodes from XC."
+        )
+        return provider_from_xc
+
+    # XC also gave nothing usable – fall back to original (empty) provider-info
+    log(
+        f"XC fallback returned no usable episodes for series_id={series_id} "
+        f"({account_name})."
+    )
+    return provider_norm
+
+
 # ------------------------------------------------------------
 # XC proxy URLs
 # ------------------------------------------------------------
@@ -1034,12 +1253,13 @@ def export_movie(account_name: str, movies_dir: Path, proxy_host: str, account_i
 def export_series(
     base: str,
     token: str,
-    account_name: str,
+    account: dict,
     series_dir: Path,
     proxy_host: str,
     account_id: int,
     series: dict,
 ):
+    account_name = account.get("name") or f"Account-{account_id}"
     name = series.get("name") or ""
     year = series.get("year") or 0
     tmdb_id = series.get("tmdb_id")
@@ -1057,9 +1277,8 @@ def export_series(
     show_dir = series_dir / cat / show_fs
     mkdir(show_dir)
 
-    series_id = series.get("id")
-    provider_raw = provider_info_cached(base, token, account_name, series_id)
-    provider = normalize_provider_info(provider_raw)
+    # Get provider-info, with XC fallback if Dispatcharr has no episodes
+    provider = get_normalized_provider_info_with_fallback(base, token, account, series)
     series["_provider_info"] = provider
     seasons = provider.get("seasons", [])
 
@@ -1272,8 +1491,8 @@ def export_series_for_account(base: str, token: str, account: dict):
                 while next_progress_pct <= pct and next_progress_pct < 100:
                     next_progress_pct += 10
 
-        # Write STRMs + NFO + artwork for this series
-        export_series(base, token, account_name, series_dir, proxy_host, account_id, s)
+        # Write STRMs + NFO + artwork for this series (with XC fallback)
+        export_series(base, token, account, series_dir, proxy_host, account_id, s)
 
         # Now recompute expected STRM paths for cleanup
         name = s.get("name") or ""
