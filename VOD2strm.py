@@ -13,7 +13,7 @@ import fnmatch
 
 import requests
 
-VARS_FILE = "/opt/dispatcharr_vod/vod_export_vars.sh"
+VARS_FILE = "/opt/VOD2strm/VOD2strm_vars.sh"
 
 # ------------------------------
 # Helpers: load vars from .sh
@@ -37,12 +37,12 @@ def load_vars(path: str) -> dict:
 VARS = load_vars(VARS_FILE)
 
 # Output roots (templates)
-VOD_MOVIES_DIR_TEMPLATE = VARS.get("VOD_MOVIES_DIR", "/mnt/Share-VOD/{XC_NAME}/Movies")
-VOD_SERIES_DIR_TEMPLATE = VARS.get("VOD_SERIES_DIR", "/mnt/Share-VOD/{XC_NAME}/Series")
+MOVIES_DIR_TEMPLATE = VARS.get("MOVIES_DIR", "/mnt/Share-VOD/{XC_NAME}/Movies")
+SERIES_DIR_TEMPLATE = VARS.get("SERIES_DIR", "/mnt/Share-VOD/{XC_NAME}/Series")
 
 # Logging + cleanup
-LOG_FILE = VARS.get("VOD_LOG_FILE", "/opt/dispatcharr_vod/vod_export.log")
-VOD_DELETE_OLD = VARS.get("VOD_DELETE_OLD", "true").lower() == "true"
+LOG_FILE = VARS.get("LOG_FILE", "/opt/VOD2strm/VOD2strm.log")
+DELETE_OLD = VARS.get("DELETE_OLD", "true").lower() == "true"
 
 # Dispatcharr API
 DISPATCHARR_BASE_URL = VARS.get("DISPATCHARR_BASE_URL", "http://127.0.0.1:9191")
@@ -53,38 +53,38 @@ DISPATCHARR_API_PASS = VARS.get("DISPATCHARR_API_PASS", "")
 XC_NAMES_RAW = VARS.get("XC_NAMES", "*")
 
 # Enable / disable movies/series export
-EXPORT_MOVIES = VARS.get("VOD_EXPORT_MOVIES", "true").lower() == "true"
-EXPORT_SERIES = VARS.get("VOD_EXPORT_SERIES", "true").lower() == "true"
+EXPORT_MOVIES = VARS.get("EXPORT_MOVIES", "true").lower() == "true"
+EXPORT_SERIES = VARS.get("EXPORT_SERIES", "true").lower() == "true"
 
 # One-shot full reset (env overrides file)
-clear_cache_env = os.getenv("VOD_CLEAR_CACHE")
+clear_cache_env = os.getenv("CLEAR_CACHE")
 if clear_cache_env is not None:
     CLEAR_CACHE = clear_cache_env.lower() == "true"
 else:
-    CLEAR_CACHE = VARS.get("VOD_CLEAR_CACHE", "false").lower() == "true"
+    CLEAR_CACHE = VARS.get("CLEAR_CACHE", "false").lower() == "true"
 
 # Dry-run (env overrides file): when true, no filesystem writes/deletes occur
-dry_run_env = os.getenv("VOD_DRY_RUN")
+dry_run_env = os.getenv("DRY_RUN")
 if dry_run_env is not None:
     DRY_RUN = dry_run_env.lower() == "true"
 else:
-    DRY_RUN = VARS.get("VOD_DRY_RUN", "false").lower() == "true"
+    DRY_RUN = VARS.get("DRY_RUN", "false").lower() == "true"
 
 # Log level / verbosity controller (for progress percentage lines)
 LOG_LEVEL = (os.getenv("LOG_LEVEL") or VARS.get("LOG_LEVEL", "INFO")).upper()
 
 # NFO / TMDB
 ENABLE_NFO = VARS.get("ENABLE_NFO", "false").lower() == "true"
-OVERWRITE_NFO = VARS.get("VOD_OVERWRITE_NFO", "false").lower() == "true"
+OVERWRITE_NFO = VARS.get("OVERWRITE_NFO", "false").lower() == "true"
 TMDB_API_KEY = VARS.get("TMDB_API_KEY", "").strip()
 NFO_LANG = VARS.get("NFO_LANG", "en-US")
 TMDB_THROTTLE_SEC = float(VARS.get("TMDB_THROTTLE_SEC", "0.3"))
 
 # Cache base
-CACHE_BASE_DIR = Path(VARS.get("VOD_CACHE_DIR", "/opt/dispatcharr_vod/cache"))
+CACHE_BASE_DIR = Path(VARS.get("CACHE_DIR", "/opt/VOD2strm/cache"))
 
 # User-Agent
-HTTP_USER_AGENT = VARS.get("HTTP_USER_AGENT", "DispatcharrEmbyVOD/1.0")
+HTTP_USER_AGENT = VARS.get("HTTP_USER_AGENT", "VOD2strm/1.0")
 
 
 # ------------------------------------------------------------
@@ -986,13 +986,13 @@ def export_series(
 # ------------------------------------------------------------
 def export_movies_for_account(base: str, token: str, account: dict):
     if not EXPORT_MOVIES:
-        log("VOD_EXPORT_MOVIES=false: skipping movies export")
+        log("EXPORT_MOVIES=false: skipping movies export")
         return
 
     account_id = account.get("id")
     account_name = account.get("name") or f"Account-{account_id}"
 
-    movies_dir = Path(VOD_MOVIES_DIR_TEMPLATE.replace("{XC_NAME}", account_name))
+    movies_dir = Path(MOVIES_DIR_TEMPLATE.replace("{XC_NAME}", account_name))
     log(f"=== Exporting Movies for account '{account_name}' ===")
     log(f"Movies dir: {movies_dir}")
     mkdir(movies_dir)
@@ -1049,7 +1049,7 @@ def export_movies_for_account(base: str, token: str, account: dict):
                 while next_progress_pct <= pct and next_progress_pct < 100:
                     next_progress_pct += 10
 
-    if VOD_DELETE_OLD and movies_dir.exists():
+    if DELETE_OLD and movies_dir.exists():
         removed = 0
         for existing in movies_dir.glob("**/*.strm"):
             if existing not in expected_files:
@@ -1075,13 +1075,13 @@ def export_movies_for_account(base: str, token: str, account: dict):
 
 def export_series_for_account(base: str, token: str, account: dict):
     if not EXPORT_SERIES:
-        log("VOD_EXPORT_SERIES=false: skipping series export")
+        log("EXPORT_SERIES=false: skipping series export")
         return
 
     account_id = account.get("id")
     account_name = account.get("name") or f"Account-{account_id}"
 
-    series_dir = Path(VOD_SERIES_DIR_TEMPLATE.replace("{XC_NAME}", account_name))
+    series_dir = Path(SERIES_DIR_TEMPLATE.replace("{XC_NAME}", account_name))
     log(f"=== Exporting Series for account '{account_name}' ===")
     log(f"Series dir: {series_dir}")
     mkdir(series_dir)
@@ -1160,7 +1160,7 @@ def export_series_for_account(base: str, token: str, account: dict):
                 expected_files.add(strm_path)
                 added_eps += 1
 
-    if VOD_DELETE_OLD and series_dir.exists():
+    if DELETE_OLD and series_dir.exists():
         for existing in series_dir.glob("**/*.strm"):
             if existing not in expected_files:
                 if DRY_RUN:
@@ -1192,10 +1192,10 @@ def export_series_for_account(base: str, token: str, account: dict):
 if __name__ == "__main__":
     log("=== Dispatcharr -> Emby VOD Export (API-only, per-account, proxy URLs) started ===")
     if DRY_RUN:
-        log("VOD_DRY_RUN=true: DRY RUN - no files, directories, or caches will be written or deleted.")
+        log("DRY_RUN=true: DRY RUN - no files, directories, or caches will be written or deleted.")
     try:
         if CLEAR_CACHE:
-            log("VOD_CLEAR_CACHE=true: clearing cache dir before export")
+            log("CLEAR_CACHE=true: clearing cache dir before export")
             if CACHE_BASE_DIR.exists():
                 if DRY_RUN:
                     log(f"[dry-run] Would clear cache dir: {CACHE_BASE_DIR}")
@@ -1227,8 +1227,8 @@ if __name__ == "__main__":
             safe_name = safe_account_name(account_name)
             log(f"  - {account_name} (id={acc.get('id')}, server_url={acc.get('server_url')})")
 
-            movies_dir = Path(VOD_MOVIES_DIR_TEMPLATE.replace("{XC_NAME}", account_name))
-            series_dir = Path(VOD_SERIES_DIR_TEMPLATE.replace("{XC_NAME}", account_name))
+            movies_dir = Path(MOVIES_DIR_TEMPLATE.replace("{XC_NAME}", account_name))
+            series_dir = Path(SERIES_DIR_TEMPLATE.replace("{XC_NAME}", account_name))
 
             if CLEAR_CACHE:
                 acc_cache_dir = CACHE_BASE_DIR / safe_name

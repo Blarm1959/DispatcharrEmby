@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
 # Dispatcharr -> Emby/Jellyfin/Plex/Kodi VOD Export
-# Configuration file for vod_export.py
+# Configuration file for VOD2strm.py
 #
-# Copy this to /opt/dispatcharr_vod/vod_export_vars.sh and edit as needed.
+# Copy this to /opt/VOD2strm/VOD2strm_vars.sh and edit as needed.
 
 ########################################
 # Core paths
@@ -11,14 +11,14 @@
 
 # Base paths for output STRM libraries.
 # {XC_NAME} is replaced by the Dispatcharr M3U/XC account name.
-VOD_MOVIES_DIR="/mnt/Share-VOD/{XC_NAME}/Movies"
-VOD_SERIES_DIR="/mnt/Share-VOD/{XC_NAME}/Series"
+MOVIES_DIR="/mnt/Share-VOD/{XC_NAME}/Movies"
+SERIES_DIR="/mnt/Share-VOD/{XC_NAME}/Series"
 
 # Log file for exporter runs
-VOD_LOG_FILE="/opt/dispatcharr_vod/vod_export.log"
+LOG_FILE="/opt/VOD2strm/VOD2strm.log"
 
 # Cache directory (per-account JSON + TMDB cache)
-VOD_CACHE_DIR="/opt/dispatcharr_vod/cache"
+CACHE_DIR="/opt/VOD2strm/cache"
 
 ########################################
 # Dispatcharr API
@@ -32,7 +32,7 @@ DISPATCHARR_API_USER="admin"
 DISPATCHARR_API_PASS="Cpfc0603!"
 
 # HTTP User-Agent for API + TMDB calls
-HTTP_USER_AGENT="DispatcharrEmbyVOD/1.0"
+HTTP_USER_AGENT="VOD2strm/1.0"
 
 ########################################
 # XC account filter
@@ -51,8 +51,8 @@ XC_NAMES="*"
 ########################################
 
 # Whether to export Movies and/or Series for each matched account
-VOD_EXPORT_MOVIES="true"
-VOD_EXPORT_SERIES="true"
+EXPORT_MOVIES="true"
+EXPORT_SERIES="true"
 
 ########################################
 # NFO / TMDB metadata
@@ -62,7 +62,7 @@ VOD_EXPORT_SERIES="true"
 ENABLE_NFO="true"
 
 # Overwrite existing .nfo files (true/false)
-VOD_OVERWRITE_NFO="false"
+OVERWRITE_NFO="false"
 
 # TMDB API key (optional but strongly recommended for artwork + rich metadata)
 TMDB_API_KEY=""
@@ -78,10 +78,10 @@ TMDB_THROTTLE_SEC="0.30"
 ########################################
 
 # Remove stale STRM files that no longer correspond to active Dispatcharr items
-VOD_DELETE_OLD="true"
+DELETE_OLD="true"
 
 # Clear cache (per-account movie/series caches + TMDB cache) before each run
-VOD_CLEAR_CACHE="false"
+CLEAR_CACHE="false"
 
 ########################################
 # Dry-run mode
@@ -89,7 +89,7 @@ VOD_CLEAR_CACHE="false"
 
 # When true, DO NOT write or delete any files or directories.
 # All operations are logged as "[dry-run] Would ...".
-VOD_DRY_RUN="false"
+DRY_RUN="false"
 
 ########################################
 # Logging verbosity

@@ -12,8 +12,6 @@ A high-performance VOD exporter for **Dispatcharr** that builds complete `.strm`
 - Safe **dry-run mode** for testing
 - Configurable progress logging via `LOG_LEVEL`
 
-This project replaces earlier database-based exporters and is designed to **supersede** `strmvod` by including all of its strengths plus major enhancements.
-
 ---
 
 ## 🚀 Features
@@ -65,10 +63,10 @@ The exporter maintains per-account caches:
 You can force a full rebuild:
 
 ```bash
-VOD_CLEAR_CACHE=true ./vod_export.py
+CLEAR_CACHE=true ./VOD2strm.py
 ```
 
-or set `VOD_CLEAR_CACHE="true"` in `vod_export_vars.sh`.
+or set `CLEAR_CACHE="true"` in `VOD2strm_vars.sh`.
 
 ---
 
@@ -137,7 +135,7 @@ If `TMDB_API_KEY` is set, the exporter:
 - Stale `.strm` files can be removed when they no longer correspond to active content:
 
 ```bash
-VOD_DELETE_OLD="true"
+DELETE_OLD="true"
 ```
 
 Empty directories are cleaned up from the bottom up (unless in dry-run).
@@ -182,9 +180,9 @@ This is handy once everything is working and you just want a clean log.
 
 ```bash
 cd /opt
-git clone https://github.com/<YOUR_USER>/DispatcharrEmby
-cd DispatcharrEmby
-chmod +x vod_export.py
+git clone https://github.com/<YOUR_USER>/VOD2strm
+cd VOD2strm
+chmod +x VOD2strm.py
 ```
 
 Install Python dependencies:
@@ -195,9 +193,9 @@ pip install requests
 
 ---
 
-## ⚙ Configuration – `vod_export_vars.sh`
+## ⚙ Configuration – `VOD2strm_vars.sh`
 
-Example configuration (this file lives by default at `/opt/dispatcharr_vod/vod_export_vars.sh`):
+Example configuration (this file lives by default at `/opt/VOD2strm/VOD2strm_vars.sh`):
 
 ```bash
 #!/usr/bin/env bash
@@ -208,14 +206,14 @@ Example configuration (this file lives by default at `/opt/dispatcharr_vod/vod_e
 
 # Where to write the final STRM + NFO + artwork libraries.
 # {XC_NAME} is replaced with the Dispatcharr M3U account name.
-VOD_MOVIES_DIR="/mnt/Share-VOD/{XC_NAME}/Movies"
-VOD_SERIES_DIR="/mnt/Share-VOD/{XC_NAME}/Series"
+MOVIES_DIR="/mnt/Share-VOD/{XC_NAME}/Movies"
+SERIES_DIR="/mnt/Share-VOD/{XC_NAME}/Series"
 
 # Log file for exporter runs
-VOD_LOG_FILE="/opt/dispatcharr_vod/vod_export.log"
+LOG_FILE="/opt/VOD2strm/VOD2strm.log"
 
 # Cache directory (per-account JSON caches + TMDB cache)
-VOD_CACHE_DIR="/opt/dispatcharr_vod/cache"
+CACHE_DIR="/opt/VOD2strm/cache"
 
 ########################################
 # Dispatcharr API
@@ -224,7 +222,7 @@ VOD_CACHE_DIR="/opt/dispatcharr_vod/cache"
 DISPATCHARR_BASE_URL="http://127.0.0.1:9191"
 DISPATCHARR_API_USER="admin"
 DISPATCHARR_API_PASS="your_admin_password_here"
-HTTP_USER_AGENT="DispatcharrEmbyVOD/1.0"
+HTTP_USER_AGENT="VOD2strm/1.0"
 
 ########################################
 # XC account filter
@@ -243,8 +241,8 @@ XC_NAMES="*"
 ########################################
 
 # Whether to export movies and/or series
-VOD_EXPORT_MOVIES="true"
-VOD_EXPORT_SERIES="true"
+EXPORT_MOVIES="true"
+EXPORT_SERIES="true"
 
 ########################################
 # NFO / TMDB metadata
@@ -254,7 +252,7 @@ VOD_EXPORT_SERIES="true"
 ENABLE_NFO="true"
 
 # Overwrite existing .nfo files (true/false)
-VOD_OVERWRITE_NFO="false"
+OVERWRITE_NFO="false"
 
 # TMDB API key for richer metadata + artwork
 TMDB_API_KEY=""
@@ -270,10 +268,10 @@ TMDB_THROTTLE_SEC="0.30"
 ########################################
 
 # Remove stale STRM files no longer present in Dispatcharr
-VOD_DELETE_OLD="true"
+DELETE_OLD="true"
 
 # Clear cache (per-account + TMDB) before running
-VOD_CLEAR_CACHE="false"
+CLEAR_CACHE="false"
 
 ########################################
 # Dry-run mode
@@ -281,7 +279,7 @@ VOD_CLEAR_CACHE="false"
 
 # When true, DO NOT write/delete any files or directories.
 # All actions are logged as "[dry-run] Would ..."
-VOD_DRY_RUN="false"
+DRY_RUN="false"
 
 ########################################
 # Logging verbosity
@@ -297,8 +295,8 @@ LOG_LEVEL="INFO"
 You can override most settings per-run using environment variables, e.g.:
 
 ```bash
-VOD_CLEAR_CACHE=true LOG_LEVEL=WARN ./vod_export.py
-VOD_DRY_RUN=true LOG_LEVEL=INFO ./vod_export.py
+CLEAR_CACHE=true LOG_LEVEL=WARN ./VOD2strm.py
+DRY_RUN=true LOG_LEVEL=INFO ./VOD2strm.py
 ```
 
 ---
@@ -327,19 +325,19 @@ Dry-run mode lets you run a full simulation of the export:
 ### Enable dry-run in config
 
 ```bash
-VOD_DRY_RUN="true"
+DRY_RUN="true"
 ```
 
 ### Or per-run, overriding the config
 
 ```bash
-VOD_DRY_RUN=true ./vod_export.py
+DRY_RUN=true ./VOD2strm.py
 ```
 
 ### Example dry-run log lines
 
 ```text
-[2025-11-12 20:10:01] VOD_DRY_RUN=true: DRY RUN - no files, directories, or caches will be written or deleted.
+[2025-11-12 20:10:01] DRY_RUN=true: DRY RUN - no files, directories, or caches will be written or deleted.
 [2025-11-12 20:10:02] [dry-run] Would create directory: /mnt/Share-VOD/Strong 8K/Movies/Action/Die Hard (1988)
 [2025-11-12 20:10:02] [dry-run] Would write file: /mnt/Share-VOD/Strong 8K/Movies/Action/Die Hard (1988)/Die Hard (1988).strm
 [2025-11-12 20:10:02] [dry-run] Would write file: /mnt/Share-VOD/Strong 8K/Movies/Action/Die Hard (1988)/movie.nfo
@@ -356,25 +354,25 @@ Combine with `LOG_LEVEL=WARN` if you only want high-level logs plus dry-run hint
 Manual run (normal mode):
 
 ```bash
-./vod_export.py
+./VOD2strm.py
 ```
 
 Full reset + real run:
 
 ```bash
-VOD_CLEAR_CACHE=true ./vod_export.py
+CLEAR_CACHE=true ./VOD2strm.py
 ```
 
 Full dry-run of a clean rebuild:
 
 ```bash
-VOD_CLEAR_CACHE=true VOD_DRY_RUN=true ./vod_export.py
+CLEAR_CACHE=true DRY_RUN=true ./VOD2strm.py
 ```
 
 Change logging verbosity:
 
 ```bash
-LOG_LEVEL=WARN ./vod_export.py
+LOG_LEVEL=WARN ./VOD2strm.py
 ```
 
 ### Suggested Cron Jobs
@@ -382,7 +380,7 @@ LOG_LEVEL=WARN ./vod_export.py
 Run exporter nightly at 02:00:
 
 ```bash
-0 2 * * * /opt/dispatcharr_vod/vod_export.py >> /opt/dispatcharr_vod/vod_export.log 2>&1
+0 2 * * * /opt/VOD2strm/VOD2strm.py >> /opt/VOD2strm/VOD2strm.log 2>&1
 ```
 
 Trigger Emby/Jellyfin library refresh at 04:00:
