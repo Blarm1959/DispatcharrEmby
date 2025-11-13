@@ -7,7 +7,7 @@ import requests
 
 DISPATCHARR_BASE_URL = "http://127.0.0.1:9191"
 USERNAME = "admin"                  # <-- change if different
-PASSWORD = "your_admin_password_here"  # <-- change to your real password
+PASSWORD = "Cpfc0603!"  # <-- change to your real password
 
 TARGET_ACCOUNT_NAME = "Strong 8K"
 PAGE_SIZE = 20

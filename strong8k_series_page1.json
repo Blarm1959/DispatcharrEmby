@@ -1,0 +1,714 @@
+Dispatcharr base: http://127.0.0.1:9191
+
+=== Raw JSON from /api/vod/series/ for Strong 8K (first page) ===
+
+{
+  "count": 4249,
+  "next": "http://127.0.0.1:9191/api/vod/series/?m3u_account=2&page=2&page_size=20",
+  "previous": null,
+  "results": [
+    {
+      "id": 2171,
+      "logo": {
+        "id": 24593,
+        "name": "4K-A+ - Acapulco (2021) (US)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/lU0RlcfBx6y0FSmEAq61ztjMgjt.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24593/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Acapulco (2021) (US)"
+        ]
+      },
+      "episode_count": 40,
+      "uuid": "235cf9d2-b831-46e7-92d8-7696c0da3fd9",
+      "name": "4K-A+ - Acapulco (2021) (US)",
+      "description": "In 1984, Maximo Gallardo's dream comes true when he gets the job of a lifetime at Acapulco's hottest resort, Las Colinas. But he soon realizes that working there will be far more complicated than he ever imagined.",
+      "year": 2021,
+      "rating": "7.0",
+      "genre": "Comedy / Drama",
+      "tmdb_id": "133727",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Eugenio Derbez, Enrique Arrizon, Raphael Alejandro, Camila Perez, Chord Overstreet, Fernando Carsa, Jessica Collins, Vanessa Bauche",
+        "director": "Austin Winsberg, Jason Shuman, Eduardo Cisneros",
+        "category_id": "156",
+        "releaseDate": "2021-10-08",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/1zWgb5owPiYWmoJ5SEpv6XJb8CQ.jpg"
+        ],
+        "youtube_trailer": "e8YKi_05emo",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.418049Z",
+      "updated_at": "2025-11-08T14:35:37.418052Z"
+    },
+    {
+      "id": 2154,
+      "logo": {
+        "id": 25309,
+        "name": "EN - Bad Monkey (2024) (US)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/sDbpr5VoxlcQvzvWFECr7bXCAwg.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/25309/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Bad Monkey (2024) (US)"
+        ]
+      },
+      "episode_count": 10,
+      "uuid": "cf01360f-d2eb-41d9-a56a-b9c6c0dadb9b",
+      "name": "4K-A+ - Bad Monkey (2024) (US)",
+      "description": "A detective turned restaurant inspector in Southern Florida is pulled into a world of greed and corruption after a tourist finds a severed arm while fishing. And yes, there's a monkey.",
+      "year": 2024,
+      "rating": "7.0",
+      "genre": "Comedy / Crime",
+      "tmdb_id": "130853",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Vince Vaughn, L. Scott Caldwell, Rob Delaney, Meredith Hagner, Natalie Martinez, Alex Moffat, Michelle Monaghan, Ronald Peet",
+        "director": "Bill Lawrence",
+        "category_id": "156",
+        "releaseDate": "2024-08-13",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/gKgAXa1ouOJqKUyRfkslVnRgYNb.jpg"
+        ],
+        "youtube_trailer": "fLup7hYWxLk",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.417796Z",
+      "updated_at": "2025-11-08T14:35:37.417799Z"
+    },
+    {
+      "id": 2146,
+      "logo": {
+        "id": 25582,
+        "name": "EN - Before (2024) (US)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/AeoPVoc7Ojq7zZ6bujJCZFeKhDM.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/25582/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Before (2024) (US)"
+        ]
+      },
+      "episode_count": 10,
+      "uuid": "da2123c4-296b-4c0e-905d-2e8ee8809561",
+      "name": "4K-A+ - Before (2024) (US)",
+      "description": "After tragically losing his wife, child psychiatrist Dr. Eli Adler encounters a troubled young boy who seems to have a haunting connection to Eli's past.",
+      "year": 2024,
+      "rating": "8.0",
+      "genre": "Drama / Mystery",
+      "tmdb_id": "240920",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Billy Crystal, Judith Light, Rosie Perez, Jacobi Jupe, Maria Dizzia, Ava Lalezarzadeh",
+        "director": "Sarah Thorp",
+        "category_id": "156",
+        "releaseDate": "2024-10-24",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/pv7j6OGssxFm3zUgL7aSUrEmTem.jpg"
+        ],
+        "youtube_trailer": "vfk_nRPrmHk",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.417677Z",
+      "updated_at": "2025-11-08T14:35:37.417680Z"
+    },
+    {
+      "id": 2134,
+      "logo": {
+        "id": 24649,
+        "name": "4K-A+ - Berlin ER (2025) (DE)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/zo6YUpFwiXLkZROqMtRuTKcSraq.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24649/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Berlin ER (2025) (DE)"
+        ]
+      },
+      "episode_count": 8,
+      "uuid": "3cd1ead1-979d-4c7e-abbd-060595f8ae5a",
+      "name": "4K-A+ - Berlin ER (2025) (DE)",
+      "description": "After her private life falls apart, a young doctor seeking a fresh start takes over the emergency room in Berlin's toughest, most chaotic hospital. Battling staff resistance and a run-down system, she must unite her maverick team to save lives.",
+      "year": 2025,
+      "rating": "3.0",
+      "genre": "Drama",
+      "tmdb_id": "239362",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Haley Louise Jones, Slavko Popadic, Bernhard Schütz, Şafak Şengül, Aram Tafreshian, Samirah Breuer, Peter Lohmeyer, Benjamin Radjaipour",
+        "director": "Samuel Jefferson, Viktor Jakovleski",
+        "category_id": "434",
+        "releaseDate": "2025-02-26",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/hdxIS8eS07pnQbkMUlDU5CKKPls.jpg"
+        ],
+        "youtube_trailer": "32QMH7xzQjc",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.417500Z",
+      "updated_at": "2025-11-08T14:35:37.417503Z"
+    },
+    {
+      "id": 2215,
+      "logo": {
+        "id": 24734,
+        "name": "4K-A+ - Big Beasts",
+        "url": "http://www.themoviedb.org/t/p/original/8AAGmOCivPBZucJgLni1L6MrZgg.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24734/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Big Beasts"
+        ]
+      },
+      "episode_count": 10,
+      "uuid": "74fc4857-e730-489d-a69d-5722fa0d182f",
+      "name": "4K-A+ - Big Beasts",
+      "description": "Travel from freezing poles to tropical rainforests to meet nature’s most captivating giants, who prove being big comes with enormous challenges.\r\n\r\nمن الأقطاب الجليدية إلى الأدغال الاستوائية تلتقي بالطبيعة الأكثر جذبًا للعمالقة",
+      "year": 2023,
+      "rating": "8.0",
+      "genre": "Documentary",
+      "tmdb_id": "223528",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Tom Hiddleston",
+        "category_id": "1053",
+        "releaseDate": "2023-04-21 (UK)",
+        "backdrop_path": [
+          "https://www.themoviedb.org/t/p/original/jC53PNTmhoRBae8if7UMxNusQM9.jpg"
+        ],
+        "youtube_trailer": "j51ZxCP1_dI",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.418730Z",
+      "updated_at": "2025-11-08T14:35:37.418732Z"
+    },
+    {
+      "id": 2270,
+      "logo": {
+        "id": 27714,
+        "name": "EN - Black Bird",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/79M2yNSmkh4CCMrWNV6b2xvIeNn.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/27714/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - ِِBlack Bird"
+        ]
+      },
+      "episode_count": 6,
+      "uuid": "2455b8a7-524d-45a3-9ad5-ce357674d251",
+      "name": "4K-A+ - ِِBlack Bird",
+      "description": "As Jimmy Keene begins a 10-year prison sentence, he gets an incredible offer: If he can elicit a confession from suspected killer Larry Hall, Jimmy will be freed. Completing this mission becomes the challenge of a lifetime.",
+      "year": 2022,
+      "rating": "9.0",
+      "genre": "Drama, Crime",
+      "tmdb_id": "155537",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Taron Egerton, Paul Walter Hauser, Ray Liotta, Greg Kinnear, Sepideh Moafi, Laney Stiebing",
+        "director": "Dennis Lehane",
+        "category_id": "156",
+        "releaseDate": "2022-07-07",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/original/o2C222QdW4dmoyd2dgPlnCcI3cW.jpg"
+        ],
+        "youtube_trailer": "aH1FOkJys3Y",
+        "episode_run_time": "60"
+      },
+      "created_at": "2025-11-08T14:35:37.419549Z",
+      "updated_at": "2025-11-08T14:35:37.419552Z"
+    },
+    {
+      "id": 2195,
+      "logo": {
+        "id": 24570,
+        "name": "4K-A+ - Boom! Boom! The World vs. Boris Becker",
+        "url": "https://image.tmdb.org/t/p/original/iNAnHT98ggxwg1JejtZUfwljGrN.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24570/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Boom! Boom! The World vs. Boris Becker"
+        ]
+      },
+      "episode_count": 2,
+      "uuid": "a6401f50-a848-4c1a-9c30-eb60d11ca73f",
+      "name": "4K-A+ - Boom! Boom! The World vs. Boris Becker",
+      "description": "An inside look at the controversial life and career of tennis great Boris Becker—featuring interviews with John McEnroe, Novak Djokovic, Björn Borg, and other icons.\r\nسيستكشف الفيلم حياة بيكر ، الذي أصبح ضجة كبيرة في التنس عندما فاز بأول من بين ست شركاته الكبرى في سن 17 عامًا فقط ، واستمر في مسيرته المهنية الرائعة ، بما في ذلك 49 لقبًا مهنيًا رئيسيًا وذهبية أولمبية",
+      "year": 2023,
+      "rating": "6.0",
+      "genre": "Documentary",
+      "tmdb_id": "216681",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Boris Becker",
+        "category_id": "1053",
+        "releaseDate": "2023-04-06 (UK - USA)",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/original/Y3pqFpdEVIjQipqFw3fYfPcSm0.jpg"
+        ],
+        "youtube_trailer": "hl9-tFmcAso",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.418438Z",
+      "updated_at": "2025-11-08T14:35:37.418440Z"
+    },
+    {
+      "id": 2127,
+      "logo": {
+        "id": 24633,
+        "name": "4K-A+ - Carême (2025) (FR)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/AoRaqmBGeJt1H23cbMatnWMMxTA.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24633/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Carême (2025) (FR)"
+        ]
+      },
+      "episode_count": 8,
+      "uuid": "7f24a5ac-27ff-4f5e-a4b9-4c8d1ed374f0",
+      "name": "4K-A+ - Carême (2025) (FR)",
+      "description": "Witness the rise of the world's first celebrity chef, Antonin Carême, and his descent into espionage in Napoleon-era France—where manipulation is king. With his gifts for gastronomy and seduction, he becomes the perfect weapon in a fight for power.",
+      "year": 2025,
+      "rating": "7.0",
+      "genre": "Drama / Mystery / War & Politics",
+      "tmdb_id": "231001",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Benjamin Voisin, Jérémie Renier, Lyna Khoudri, Sigrid Bouaziz, Alice da Luz, Pablo Cobo, Micha Lescot, Juliette Armanet",
+        "director": "Ian Kelly, Davide Serino",
+        "category_id": "434",
+        "releaseDate": "2025-04-30",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/xedpbCiPxGiyusIutkhkLXx1shT.jpg"
+        ],
+        "youtube_trailer": "g9LOTX_A-ps",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.417398Z",
+      "updated_at": "2025-11-08T14:35:37.417401Z"
+    },
+    {
+      "id": 2120,
+      "logo": {
+        "id": 24740,
+        "name": "4K-A+ - Chief of War (2025) (US)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/8Mckh3qJRTzXTQNZtpb133RHmO4.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24740/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Chief of War (2025) (US)"
+        ]
+      },
+      "episode_count": 9,
+      "uuid": "06c9e626-81b1-4ad9-b3a9-b75101983bf8",
+      "name": "4K-A+ - Chief of War (2025) (US)",
+      "description": "With Hawaii's four kingdoms divided by war, the ferocious warrior Kaʻiana embarks on an epic mission to unite his people—as an existential threat approaches their shores.",
+      "year": 2025,
+      "rating": "7.0",
+      "genre": "Drama",
+      "tmdb_id": "196890",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Jason Momoa, Luciane Buchanan, Te Ao o Hinepehinga, Cliff Curtis, Kaina Makua, Moses Goods, Siua Ikale‘o, Brandon Finn",
+        "director": "Jason Momoa, Thomas Pa'a Sibbett",
+        "category_id": "156",
+        "releaseDate": "2025-07-31",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/2c3PCbxVgWen5HrYsaukUmfu4J9.jpg"
+        ],
+        "youtube_trailer": "9-jPR2StJzc",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.417294Z",
+      "updated_at": "2025-11-08T14:35:37.417296Z"
+    },
+    {
+      "id": 2248,
+      "logo": {
+        "id": 24587,
+        "name": "4K-A+ - City on Fire",
+        "url": "https://image.tmdb.org/t/p/w154/lGzN8SgwlQMYn5uUI0pzG9EfXSD.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24587/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - City on Fire"
+        ]
+      },
+      "episode_count": 8,
+      "uuid": "9c2c9a11-1217-49fc-8e64-db026d81dc51",
+      "name": "4K-A+ - City on Fire",
+      "description": "A college student is shot in Central Park on July 4, 2003. The investigation connects a series of mysterious citywide fires, the downtown music scene, and a wealthy uptown real estate family fraying under the strain of the many secrets they keep.",
+      "year": 2023,
+      "rating": "8.0",
+      "genre": "Drama / Mystery",
+      "tmdb_id": "155534",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Jemima Kirke, Wyatt Oleff, Chase Sui Wonders, Nico Tortorella, Ashley Zukerman, Xavier Clyde, Max Milner, Alexandra Doke",
+        "director": "Josh Schwartz, Stephanie Savage",
+        "category_id": "156",
+        "releaseDate": "2023-05-11",
+        "youtube_trailer": "OVE6xnc5lu4",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.419221Z",
+      "updated_at": "2025-11-08T14:35:37.419224Z"
+    },
+    {
+      "id": 2176,
+      "logo": {
+        "id": 26533,
+        "name": "EN - Constellation",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/21ICs3fxlxGslbzS4moCHk9HNo6.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/26533/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Constellation"
+        ]
+      },
+      "episode_count": 8,
+      "uuid": "fce833de-19a5-4afa-8e05-14662f2ee58e",
+      "name": "4K-A+ - Constellation",
+      "description": "When a fatal accident occurs on board the International Space Station, a lone astronaut makes the heroic journey back to Earth, only to discover key pieces of her life—including her young daughter—have changed.",
+      "year": 2024,
+      "rating": "8.0",
+      "genre": "Sci-Fi & Fantasy / Mystery / Drama",
+      "tmdb_id": "197125",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Noomi Rapace, Jonathan Banks, James D'Arcy, Rosie Coleman, Davina Coleman, William Catlett, Julian Looman",
+        "director": "Peter Harness",
+        "category_id": "156",
+        "releaseDate": "2024-02-21",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/pIGLdSGbdBAKu5diYFkU5nLpXkI.jpg"
+        ],
+        "youtube_trailer": "Wg5peVbXuzQ",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.418122Z",
+      "updated_at": "2025-11-08T14:35:37.418125Z"
+    },
+    {
+      "id": 2155,
+      "logo": {
+        "id": 26054,
+        "name": "EN - Cowboy Cartel (2024) (US)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/qrT4s9PZaLYw61NWA29V1ApKyh9.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/26054/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Cowboy Cartel (2024) (US)"
+        ]
+      },
+      "episode_count": 4,
+      "uuid": "5b330e24-0875-48c1-9a56-bf5087ac8bad",
+      "name": "4K-A+ - Cowboy Cartel (2024) (US)",
+      "description": "When a rookie FBI agent uncovers a massive money laundering operation in American horse racing, he risks his life to take down the culprits: Mexico's deadliest cartel.",
+      "year": 2024,
+      "rating": "10.0",
+      "genre": "Documentary / Crime",
+      "tmdb_id": "259684",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Scott Lawson, Steve Pennington, Steve Junker, Brian Schutt, Kim Williams, Doug Gardner, Ginger Thompson, Joe Tone",
+        "category_id": "156",
+        "releaseDate": "2024-08-01",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/tIA4C3NKQWe1H53IilRpWx1OM7f.jpg"
+        ],
+        "youtube_trailer": "sZYlEs26cWs",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.417811Z",
+      "updated_at": "2025-11-08T14:35:37.417814Z"
+    },
+    {
+      "id": 2183,
+      "logo": {
+        "id": 26409,
+        "name": "EN - Criminal Record",
+        "url": "https://image.tmdb.org/t/p/w154/wjwvJwoEGyPGTJ0QQF6UH7Sqt9j.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/26409/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Criminal Record"
+        ]
+      },
+      "episode_count": 8,
+      "uuid": "e0548833-832f-4683-a72f-ccabfcb3dde6",
+      "name": "4K-A+ - Criminal Record",
+      "description": "In the heart of London, an anonymous phone call draws two brilliant detectives—a young woman in the early stages of her career and a well-connected man determined to protect his legacy—into a fight to correct an old miscarriage of justice.",
+      "year": 2024,
+      "rating": "8.0",
+      "genre": "Crime / Drama",
+      "tmdb_id": "204490",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Peter Capaldi, Cush Jumbo, Shaun Dooley, Zoë Wanamaker, Charlie Creed-Miles, Cathy Tyson, Stephen Campbell Moore",
+        "director": "Paul Rutman",
+        "category_id": "156",
+        "releaseDate": "2024-01-10",
+        "youtube_trailer": "G_sohSQWHvg",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.418262Z",
+      "updated_at": "2025-11-08T14:35:37.418264Z"
+    },
+    {
+      "id": 2172,
+      "logo": {
+        "id": 25720,
+        "name": "EN - Dark Matter (US)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/c6MRUtPk0nEPQ9FBD9RdRKt2rIm.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/25720/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Dark Matter (2024)"
+        ]
+      },
+      "episode_count": 9,
+      "uuid": "0d4d2cef-8294-4111-b4f8-800f0ccac244",
+      "name": "4K-A+ - Dark Matter (2024)",
+      "description": "Jason Dessen is abducted into an alternate version of his life. To get back to his true family, he embarks on a harrowing journey to save them from the most terrifying foe imaginable: himself.",
+      "year": 2024,
+      "rating": "8.0",
+      "genre": "Drama / Mystery / Sci-Fi & Fantasy",
+      "tmdb_id": "196322",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Joel Edgerton, Jennifer Connelly, Alice Braga, Jimmi Simpson, Dayo Okeniyi, Oakes Fegley",
+        "director": "Blake Crouch",
+        "category_id": "156",
+        "releaseDate": "2024-05-07",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/5fWxvjOUvtUoSmiMEpFl77V6KZV.jpg"
+        ],
+        "youtube_trailer": "j6ucGt_Xp14",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.418064Z",
+      "updated_at": "2025-11-08T14:35:37.418066Z"
+    },
+    {
+      "id": 2203,
+      "logo": {
+        "id": 24965,
+        "name": "4K-A+ - Dear...",
+        "url": "https://image.tmdb.org/t/p/original/xk3sNBN74oQZBZ03ubq1V8bALmP.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24965/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Dear..."
+        ]
+      },
+      "episode_count": 20,
+      "uuid": "0ddace11-f020-41a6-8c88-40afdc59bcfd",
+      "name": "4K-A+ - Dear...",
+      "description": "An inventive and cinematic approach to biographies of the most iconic figures in society today by using letters written by those whose lives have been changed through their work.\r\nنهج مبتكر وسنيمائي لسير الشخصيات الأكثر شهرة في المجتمع اليوم باستخدام رسائل كتبها أولئك الذين تغيرت حياتهم من خلال عملهم",
+      "year": 2020,
+      "rating": "5.0",
+      "genre": "Documentary",
+      "tmdb_id": "98200",
+      "imdb_id": null,
+      "custom_properties": {
+        "director": "R.J. Cutler",
+        "category_id": "1053",
+        "releaseDate": "2020-06-05 (USA)",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/original/5hsidl7ynDTrZyMbgGhoV6RSXyT.jpg"
+        ],
+        "youtube_trailer": "nhnHN2lv2ho",
+        "episode_run_time": "29"
+      },
+      "created_at": "2025-11-08T14:35:37.418555Z",
+      "updated_at": "2025-11-08T14:35:37.418558Z"
+    },
+    {
+      "id": 2242,
+      "logo": {
+        "id": 24813,
+        "name": "4K-A+ - Dear Edward",
+        "url": "https://image.tmdb.org/t/p/w154/cB0g6TZaMo88ZHS9hQyLpYbbD0C.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24813/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Dear Edward"
+        ]
+      },
+      "episode_count": 10,
+      "uuid": "989c6dd0-2e11-4669-a4dd-52228421553e",
+      "name": "4K-A+ - Dear Edward",
+      "description": "A 12-year-old boy survives a plane crash that kills every other passenger on the flight, including his family. As he and others affected by the tragedy try to make sense of what happened, unexpected friendships, romances, and communities are formed.",
+      "year": 2023,
+      "rating": "8.0",
+      "genre": "Drama",
+      "tmdb_id": "156820",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Connie Britton, Taylor Schilling, Colin O'Brien, Anna Uzele, Idris Debrand, Carter Hudson, Eva Ariel Binder, Amy Forsyth",
+        "director": "Jason Katims",
+        "category_id": "156",
+        "releaseDate": "2023-02-02",
+        "youtube_trailer": "TdMT2jDsqfI",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.419128Z",
+      "updated_at": "2025-11-08T14:35:37.419131Z"
+    },
+    {
+      "id": 2148,
+      "logo": {
+        "id": 25210,
+        "name": "EN - Disclaimer (2024) (GB)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/6TdW4T2EsnhXrPQccB8szK93UhF.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/25210/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Disclaimer (2024) (GB)"
+        ]
+      },
+      "episode_count": 7,
+      "uuid": "dfdea1e9-2a6c-4d63-b826-3e720b77936e",
+      "name": "4K-A+ - Disclaimer (2024) (GB)",
+      "description": "When an intriguing novel appears at the bedside of a journalist whose career has been built on revealing transgressions, she is horrified to realize she's a key character in a long-buried story—one that exposes her darkest secret.",
+      "year": 2024,
+      "rating": "8.0",
+      "genre": "Drama / Mystery",
+      "tmdb_id": "147050",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Cate Blanchett, Kevin Kline, Sacha Baron Cohen, Lesley Manville, Louis Partridge, Leila George, Indira Varma, Kodi Smit-McPhee",
+        "director": "Alfonso Cuarón",
+        "category_id": "156",
+        "releaseDate": "2024-10-11",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/j7HEQlQoWA2weOR7jS1h5YbsEvM.jpg"
+        ],
+        "youtube_trailer": "X2juoJY7Uyw",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.417707Z",
+      "updated_at": "2025-11-08T14:35:37.417709Z"
+    },
+    {
+      "id": 2133,
+      "logo": {
+        "id": 25624,
+        "name": "EN - Dope Thief (2025) (US)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/urlpoKrHe4KX1CpDFyzK3MSYlVN.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/25624/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Dope Thief (2025) (US)"
+        ]
+      },
+      "episode_count": 8,
+      "uuid": "1a3b6753-f5d8-47dd-9401-ce411c5745c5",
+      "name": "4K-A+ - Dope Thief (2025) (US)",
+      "description": "Two lifelong friends in Philadelphia pose as DEA agents to rob small-time drug dealers. It's a perfect grift—until they choose the wrong mark and become targets of a massive narcotics enterprise.",
+      "year": 2025,
+      "rating": "6.0",
+      "genre": "Crime / Drama",
+      "tmdb_id": "209876",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Brian Tyree Henry, Wagner Moura, Marin Ireland, Amir Arison, Nesta Cooper, Kate Mulgrew, Ving Rhames",
+        "director": "Peter Craig",
+        "category_id": "156",
+        "releaseDate": "2025-03-13",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/qbUeqIQAn1cy01OuSctGmatVJCC.jpg"
+        ],
+        "youtube_trailer": "RePjWY4ESyQ",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.417486Z",
+      "updated_at": "2025-11-08T14:35:37.417488Z"
+    },
+    {
+      "id": 2115,
+      "logo": {
+        "id": 24937,
+        "name": "4K-A+ - Down Cemetery Road (2025) (GB)",
+        "url": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/dj3QTYe7OVPjFTpUoEp2GEyLNrR.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24937/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Down Cemetery Road (2025) (GB)"
+        ]
+      },
+      "episode_count": 4,
+      "uuid": "901710c0-a061-4b5f-8d74-371dd9e32dbe",
+      "name": "4K-A+ - Down Cemetery Road (2025) (GB)",
+      "description": "When a child goes missing in the aftermath of a house explosion, a concerned neighbor teams up with a private investigator to find them. As secrets unravel and a military conspiracy emerges, all hell is unleashed on South Oxford's sleepy suburbs.",
+      "year": 2025,
+      "rating": "0.0",
+      "genre": "Drama / Crime / Mystery",
+      "tmdb_id": "252000",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Emma Thompson, Ruth Wilson, Adeel Akhtar, Nathan Stewart-Jarrett, Tom Goodman-Hill, Darren Boyd, Tom Riley, Adam Godley",
+        "category_id": "434",
+        "releaseDate": "2025-10-29",
+        "backdrop_path": [
+          "https://image.tmdb.org/t/p/w1280/x2t3L2WNm2xG9C8kEOOgTaI0uwk.jpg"
+        ],
+        "youtube_trailer": "0unUwpCfRg0",
+        "episode_run_time": "0"
+      },
+      "created_at": "2025-11-08T14:35:37.417185Z",
+      "updated_at": "2025-11-08T14:35:37.417188Z"
+    },
+    {
+      "id": 2228,
+      "logo": {
+        "id": 24756,
+        "name": "4K-A+ - Dr. Brain",
+        "url": "https://image.tmdb.org/t/p/w154/3bYYLQAFWHsTtJyZb0vIReJJv07.jpg",
+        "cache_url": "http://127.0.0.1:9191/api/channels/logos/24756/cache/",
+        "channel_count": 1,
+        "is_used": true,
+        "channel_names": [
+          "Series: 4K-A+ - Dr. Brain"
+        ]
+      },
+      "episode_count": 6,
+      "uuid": "3c98e4da-3476-4150-a90d-0f1719f906b1",
+      "name": "4K-A+ - Dr. Brain",
+      "description": "Brilliant brain scientist Sewon suffers a horrific personal tragedy. Desperate to uncover what happened to his family, he conducts \"brain syncs\" with the dead to access their memories for clues.",
+      "year": 2021,
+      "rating": "7.0",
+      "genre": "Sci-Fi & Fantasy / Mystery / Drama",
+      "tmdb_id": "119955",
+      "imdb_id": null,
+      "custom_properties": {
+        "cast": "Lee Sun-kyun, Park Hee-soon, Seo Ji-hye, Lee You-young, Lee Jae-won, Teo Yoo, Cha Hee",
+        "director": "Kim Jee-woon",
+        "category_id": "434",
+        "releaseDate": "2021-11-04",
+        "youtube_trailer": "ZK2nevD7cWA",
+        "episode_run_time": "60"
+      },
+      "created_at": "2025-11-08T14:35:37.418923Z",
+      "updated_at": "2025-11-08T14:35:37.418925Z"
+    }
+  ]
+}
