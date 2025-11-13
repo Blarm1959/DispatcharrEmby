@@ -3,7 +3,7 @@
 # Dispatcharr -> Emby/Jellyfin/Plex/Kodi VOD Export
 # Configuration file for VOD2strm.py
 #
-# Copy this to /opt/VOD2strm/VOD2strm_vars.sh and edit as needed.
+# Place this in the same directory as VOD2strm.py and edit as needed.
 
 ########################################
 # Core paths
@@ -15,10 +15,10 @@ MOVIES_DIR="/mnt/Share-VOD/{XC_NAME}/Movies"
 SERIES_DIR="/mnt/Share-VOD/{XC_NAME}/Series"
 
 # Log file for exporter runs
-LOG_FILE="/opt/VOD2strm/VOD2strm.log"
+LOG_FILE=""
 
 # Cache directory (per-account JSON + TMDB cache)
-CACHE_DIR="/opt/VOD2strm/cache"
+CACHE_DIR=""
 
 ########################################
 # Dispatcharr API

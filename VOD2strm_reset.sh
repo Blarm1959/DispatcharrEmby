@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-# Directory where the export script and vars live
-BASE_DIR="/opt/VOD2strm"
+# Directory where this script (and VOD2strm.py / VOD2strm_vars.sh) live
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-cd "$BASE_DIR"
+cd "$SCRIPT_DIR"
 
 echo "[VOD2strm_reset] Starting full VOD2strm reset run..."
 
