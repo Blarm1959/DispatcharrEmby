@@ -185,16 +185,12 @@ def api_paginate(base_url: str, token: str, path: str, page_size: int = 250):
     page = 1
     total = None
     seen = 0
-
     while True:
-        # Choose separator depending on whether path already has a "?"
         sep = "&" if "?" in path else "?"
         full_path = f"{path}{sep}page={page}&page_size={page_size}"
-
         data = api_get(base_url, token, full_path)
         if data is None:
             break
-
         if isinstance(data, dict):
             results = data.get("results") or data.get("data") or data.get("items") or []
             if total is None:
@@ -224,7 +220,6 @@ def api_paginate(base_url: str, token: str, path: str, page_size: int = 250):
         else:
             if len(results) < page_size:
                 break
-
         page += 1
 
 
@@ -299,9 +294,9 @@ def normalize_host_for_proxy(base: str) -> str:
         return ""
     host = host.rstrip("/")
     if host.startswith("http://"):
-        host = host[len("http://") :]
+        host = host[len("http://"):]
     elif host.startswith("https://"):
-        host = host[len("https://") :]
+        host = host[len("https://"):]
     host = "http://" + host
     return host
 
@@ -315,26 +310,13 @@ def get_xc_accounts(base: str, token: str) -> list[dict]:
 
     Swagger path:
       /api/m3u/accounts/
-
-    Response shape is a simple array of M3UAccount objects:
-      [
-        {
-          "id": 2,
-          "name": "Strong 8K",
-          "server_url": "http://cf.hi-max.me",
-          ...
-        },
-        ...
-      ]
     """
     data = api_get(base, token, "/api/m3u/accounts/")
     if not data:
         return []
-    # /api/m3u/accounts/ returns a plain list, not a paginated dict
     if isinstance(data, list):
         return data
     if isinstance(data, dict):
-        # Just in case of future API changes
         return data.get("results") or data.get("data") or data.get("items") or []
     return []
 
@@ -680,7 +662,6 @@ def tmdb_download_image(path_fragment: str, size: str, dest_path: Path) -> bool:
         return False
     cache_file = tmdb_img_cache_path(f"{size}{path_fragment}")
     if cache_file.exists():
-        # copy from cache to destination
         mkdir(dest_path.parent)
         shutil.copy2(cache_file, dest_path)
         return True
@@ -1034,14 +1015,14 @@ def export_movies_for_account(base: str, token: str, account: dict):
         written += 1
         added += 1
 
-        if processed % 250 == 0 or (total_movies and processed == total_movies):
-            pct = (processed * 100) // total_movies if total_movies else 0
-            if processed % 250 == 0 or (total_movies and pct >= next_progress_pct):
+        if total_movies:
+            pct = (processed * 100) // total_movies
+            if processed == 1 or processed == total_movies or pct >= next_progress_pct:
                 log(
                     f"Movies export '{account_name}' (API) progress: {pct}% "
-                    f"({processed}/{total_movies or 'unknown'} movies processed, {written} .strm written)"
+                    f"({processed}/{total_movies} movies processed, {written} .strm written)"
                 )
-                while total_movies and next_progress_pct <= pct and next_progress_pct < 100:
+                while next_progress_pct <= pct and next_progress_pct < 100:
                     next_progress_pct += 10
 
     if VOD_DELETE_OLD and movies_dir.exists():
@@ -1102,12 +1083,28 @@ def export_series_for_account(base: str, token: str, account: dict):
 
     total_series = len(series_list) or None
     processed_series = 0
-    next_progress_pct = 10
+    next_progress_pct = 5  # finer-grained than movies
 
     for s in series_list:
         processed_series += 1
+
+        # --- NEW: Provider-info + series export progress logging ---
+        if total_series:
+            pct = (processed_series * 100) // total_series
+            if processed_series == 1 or processed_series == total_series or pct >= next_progress_pct:
+                log(
+                    f"Series export '{account_name}' progress: {pct}% "
+                    f"({processed_series}/{total_series} series provider-info & STRM processed, "
+                    f"{added_eps} episodes written so far)"
+                )
+                while next_progress_pct <= pct and next_progress_pct < 100:
+                    next_progress_pct += 5
+        # -----------------------------------------------------------
+
+        # Write out STRMs + NFO + artwork for this series
         export_series(base, token, account_name, series_dir, proxy_host, account_id, s)
 
+        # Now recompute expected STRM paths for cleanup
         name = s.get("name") or ""
         clean_title = normalize_title(name)
         cat = fs_safe(s.get("genre") or "Unsorted")
@@ -1135,15 +1132,6 @@ def export_series_for_account(base: str, token: str, account: dict):
                 strm_path = season_dir / f"{filename}.strm"
                 expected_files.add(strm_path)
                 added_eps += 1
-
-        if processed_series % 100 == 0 or (total_series and processed_series == total_series):
-            pct = (processed_series * 100) // total_series if total_series else 0
-            log(
-                f"Series export '{account_name}' progress: {pct}% "
-                f"({processed_series}/{total_series or 'unknown'} series processed, {added_eps} episodes written so far)"
-            )
-            while total_series and next_progress_pct <= pct and next_progress_pct < 100:
-                next_progress_pct += 10
 
     if VOD_DELETE_OLD and series_dir.exists():
         for existing in series_dir.glob("**/*.strm"):
