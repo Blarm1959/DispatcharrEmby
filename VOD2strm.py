@@ -206,17 +206,20 @@ def api_paginate(base_url: str, token: str, path: str, page_size: int = 250):
     page = 1
     total = None
     seen = 0
+    next_progress_pct = 10  # log at ~10%, 20%, ... similar to movies/series
+
     while True:
         sep = "&" if "?" in path else "?"
         full_path = f"{path}{sep}page={page}&page_size={page_size}"
         data = api_get(base_url, token, full_path)
         if data is None:
             break
+
         if isinstance(data, dict):
             results = data.get("results") or data.get("data") or data.get("items") or []
             if total is None:
                 total = data.get("count") or len(results)
-                log(f"Pagination start for {path}: total={total}")
+                log_progress(f"Pagination start for {path}: total={total}")
         else:
             results = data
             if total is None:
@@ -228,9 +231,13 @@ def api_paginate(base_url: str, token: str, path: str, page_size: int = 250):
         seen += len(results)
         if total:
             pct = (seen * 100) // total
-            log(f"Pagination {path}: page={page}, {seen}/{total} ({pct}%) items fetched")
+              # First chunk, final chunk, or on/after the next 10% threshold
+            if seen == len(results) or seen >= total or pct >= next_progress_pct:
+                log_progress(f"Pagination {path}: page={page}, {seen}/{total} ({pct}%) items fetched")
+                while next_progress_pct <= pct and next_progress_pct < 100:
+                    next_progress_pct += 10
         else:
-            log(f"Pagination {path}: page={page}, {seen} items fetched (total unknown)")
+            log_progress(f"Pagination {path}: page={page}, {seen} items fetched (total unknown)")
 
         yield results
 
@@ -241,6 +248,7 @@ def api_paginate(base_url: str, token: str, path: str, page_size: int = 250):
         else:
             if len(results) < page_size:
                 break
+
         page += 1
 
 
