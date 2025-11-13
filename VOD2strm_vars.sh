@@ -29,7 +29,7 @@ DISPATCHARR_BASE_URL="http://127.0.0.1:9191"
 
 # Dispatcharr admin (or API) user credentials
 DISPATCHARR_API_USER="admin"
-DISPATCHARR_API_PASS="Cpfc0603!"
+DISPATCHARR_API_PASS="your_admin_password_here"
 
 # HTTP User-Agent for API + TMDB calls
 HTTP_USER_AGENT="VOD2strm/1.0"
