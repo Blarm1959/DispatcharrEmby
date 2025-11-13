@@ -184,14 +184,16 @@ def api_get(base_url: str, token: str, path: str, params: dict | None = None):
     if LOG_LEVEL in ("DEBUG", "VERBOSE"):
         log(f"API GET {url} -> {resp.status_code}")
     if not resp.ok:
-        log(f"HTTP {resp.status_code} from {url}: {resp.text[:200]}")
+        first_line = (resp.text or "").splitlines()[0][:200]
+        log(f"HTTP {resp.status_code} from {url} – {first_line}")
         return None
     if not resp.content:
         return None
     try:
         return resp.json()
     except ValueError:
-        log(f"ERROR: non-JSON response from {url}: {resp.text[:200]}")
+        first_line = (resp.text or "").splitlines()[0][:200]
+        log(f"ERROR: non-JSON response from {url} – {first_line}")
         return None
 
 
@@ -936,6 +938,7 @@ def export_series(
     series_id = series.get("id")
     provider_raw = provider_info_cached(base, token, account_name, series_id)
     provider = normalize_provider_info(provider_raw)
+    series["_provider_info"] = provider
     seasons = provider.get("seasons", [])
 
     tv_tmdb_data = None
@@ -1157,10 +1160,12 @@ def export_series_for_account(base: str, token: str, account: dict):
         show_fs = fs_safe(clean_title)
         show_dir = series_dir / cat / show_fs
 
-        series_id = s.get("id")
-        provider_raw = provider_info_cached(base, token, account_name, series_id)
-        provider = normalize_provider_info(provider_raw)
-        seasons = provider.get("seasons", [])
+        provider = s.get("_provider_info")
+        if not provider:
+            series_id = s.get("id")
+            provider_raw = provider_info_cached(base, token, account_name, series_id)
+            provider = normalize_provider_info(provider_raw)
+        seasons = (provider or {}).get("seasons", [])
 
         for season in seasons:
             s_num = season.get("number") or 0
