@@ -535,22 +535,93 @@ def normalize_provider_info(info: dict) -> dict:
       ]
     }
 
-    Dispatcharr's provider-info (with include_episodes=true) returns a flat
-    "episodes" list with season_number / episode_number. Some XC formats
-    instead return a nested "seasons" list. We support both.
+    Supports:
+      - Dispatcharr provider-info with "episodes" as a dict keyed by season:
+        { "episodes": { "1": [ ... ], "2": [ ... ] } }
+      - Flat "episodes" list (older / alternative formats)
+      - XC-style "seasons" list (used by build_provider_info_from_xc)
     """
     if not info or not isinstance(info, dict):
         return {"seasons": []}
 
-    # --- Case 1: modern Dispatcharr format: flat "episodes" list ---
-    episodes_flat = info.get("episodes")
-    if isinstance(episodes_flat, list) and episodes_flat:
+    seasons: list[dict] = []
+
+    # --- Case 1: Dispatcharr-style episodes dict: { "1": [ep...], "2": [ep...] } ---
+    episodes_obj = info.get("episodes")
+    if isinstance(episodes_obj, dict) and episodes_obj:
+        for season_key, ep_list in episodes_obj.items():
+            if not isinstance(ep_list, list):
+                continue
+            try:
+                s_num = int(season_key)
+            except Exception:
+                # Fallback: try first episode's season_number
+                if ep_list and isinstance(ep_list[0], dict):
+                    s_num = ep_list[0].get("season_number") or 0
+                    try:
+                        s_num = int(s_num)
+                    except Exception:
+                        s_num = 0
+                else:
+                    s_num = 0
+            if not s_num:
+                continue
+
+            norm_eps: list[dict] = []
+            for e in ep_list:
+                if not isinstance(e, dict):
+                    continue
+
+                ep_num = (
+                    e.get("episode_number")
+                    or e.get("episode_num")
+                    or e.get("num")
+                    or 0
+                )
+                try:
+                    ep_num = int(ep_num)
+                except Exception:
+                    ep_num = 0
+                if not ep_num:
+                    continue
+
+                title = (
+                    e.get("title")
+                    or e.get("name")
+                    or e.get("episode_name")
+                    or f"Episode {ep_num}"
+                )
+
+                stream_id = e.get("id") or e.get("stream_id")
+                cont = e.get("container_extension") or e.get("container") or "m3u8"
+                direct = e.get("direct_url") or e.get("url") or ""
+
+                norm_eps.append(
+                    {
+                        "episode_num": ep_num,
+                        "title": title,
+                        "stream_id": stream_id,
+                        "container_extension": cont,
+                        "direct_url": direct,
+                        "raw": e,
+                    }
+                )
+
+            if norm_eps:
+                norm_eps.sort(key=lambda ep: ep.get("episode_num") or 0)
+                seasons.append({"number": s_num, "episodes": norm_eps})
+
+        if seasons:
+            seasons.sort(key=lambda s: s.get("number") or 0)
+            return {"seasons": seasons}
+
+    # --- Case 2: flat "episodes" list ---
+    if isinstance(episodes_obj, list) and episodes_obj:
         seasons_by_number: dict[int, list[dict]] = {}
-        for e in episodes_flat:
+        for e in episodes_obj:
             if not isinstance(e, dict):
                 continue
 
-            # Season / episode numbers
             s_num = (
                 e.get("season_number")
                 or e.get("season")
@@ -562,7 +633,7 @@ def normalize_provider_info(info: dict) -> dict:
             except Exception:
                 s_num = 0
             if not s_num:
-                s_num = 1  # default to Season 1 if missing
+                s_num = 1  # default Season 1
 
             ep_num = (
                 e.get("episode_number")
@@ -584,7 +655,6 @@ def normalize_provider_info(info: dict) -> dict:
                 or f"Episode {ep_num}"
             )
 
-            # For series we usually have an internal id + uuid
             stream_id = e.get("id") or e.get("stream_id")
             cont = e.get("container_extension") or e.get("container") or "m3u8"
             direct = e.get("direct_url") or e.get("url") or ""
@@ -599,22 +669,16 @@ def normalize_provider_info(info: dict) -> dict:
             }
             seasons_by_number.setdefault(s_num, []).append(norm_ep)
 
-        norm_seasons = []
         for s_num, eps in sorted(seasons_by_number.items(), key=lambda x: x[0]):
-            # sort episodes by episode_num just to be tidy
             eps_sorted = sorted(eps, key=lambda ep: ep.get("episode_num") or 0)
-            norm_seasons.append(
-                {
-                    "number": s_num,
-                    "episodes": eps_sorted,
-                }
-            )
-        return {"seasons": norm_seasons}
+            seasons.append({"number": s_num, "episodes": eps_sorted})
 
-    # --- Case 2: older XC-style format: nested "seasons" list ---
-    seasons = info.get("seasons") or info.get("Seasons") or []
+        return {"seasons": seasons}
+
+    # --- Case 3: XC-style "seasons" list ---
+    seasons_raw = info.get("seasons") or info.get("Seasons") or []
     norm_seasons = []
-    for s in seasons:
+    for s in seasons_raw:
         if not isinstance(s, dict):
             continue
         s_num = s.get("number") or s.get("season_number") or s.get("season", 0)
@@ -625,9 +689,9 @@ def normalize_provider_info(info: dict) -> dict:
         if not s_num:
             continue
 
-        episodes = s.get("episodes") or s.get("Episodes") or []
+        eps_raw = s.get("episodes") or s.get("Episodes") or []
         norm_eps = []
-        for e in episodes:
+        for e in eps_raw:
             if not isinstance(e, dict):
                 continue
             ep_num = (
@@ -663,7 +727,8 @@ def normalize_provider_info(info: dict) -> dict:
                 }
             )
 
-        norm_seasons.append({"number": s_num, "episodes": norm_eps})
+        if norm_eps:
+            norm_seasons.append({"number": s_num, "episodes": norm_eps})
 
     return {"seasons": norm_seasons}
 
@@ -816,44 +881,85 @@ def build_provider_info_from_xc(xc_info: dict) -> dict:
     return {"seasons": seasons} if seasons else {}
 
 
-def get_normalized_provider_info_with_fallback(
+def fetch_series_with_fallback(
     base: str,
     token: str,
     account: dict,
     series: dict,
-) -> dict:
+) -> tuple[dict, dict, bool]:
     """
-    TEMPORARY WORKAROUND:
-    - Primary: Dispatcharr /api/vod/series/<id>/provider-info/?include_episodes=true
-    - Fallback: XC get_series_info (only when provider-info has no episodes)
+    Fetch series + episodes from Dispatcharr with an optional XC fallback.
 
-    The XC path is expected to be removed once the upstream Dispatcharr
-    episode handling bug is fixed in the Dispatcharr API.
+    Returns:
+        provider_info: dict
+            Full provider-info-like structure (always includes a "seasons" key
+            in the normalized form we use internally).
+        episodes_by_season: dict[int, list[dict]]
+            { season_number: [ episode_dict, ... ], ... }
+        used_xc_fallback: bool
+            True if XC was actually used to populate episodes.
     """
     account_id = account.get("id")
     account_name = account.get("name") or f"Account-{account_id}"
     series_id = series.get("id")
 
-    # Step 1: Dispatcharr provider-info (cached + normalised)
+    # Prefer the external XC series id if Dispatcharr exposes it
+    xc_series_id = (
+        series.get("external_series_id")
+        or series.get("series_id")
+        or series_id
+    )
+
+    def seasons_to_episodes_by_season(norm: dict) -> dict[int, list[dict]]:
+        out: dict[int, list[dict]] = {}
+        for s in norm.get("seasons") or []:
+            s_num = s.get("number") or s.get("season_number") or s.get("season") or 0
+            try:
+                s_num = int(s_num)
+            except Exception:
+                s_num = 0
+            if not s_num:
+                continue
+            eps = s.get("episodes") or []
+            if not isinstance(eps, list):
+                continue
+            out.setdefault(s_num, []).extend(eps)
+        return out
+
+    # ------------------------------------------------------------------
+    # 1) Primary: Dispatcharr provider-info + normalization
+    # ------------------------------------------------------------------
     provider_raw = provider_info_cached(base, token, account_name, series_id)
+    if not isinstance(provider_raw, dict):
+        provider_raw = {}
+
     provider_norm = normalize_provider_info(provider_raw)
+    # Make sure provider_info always has "seasons" in the normalized form
+    provider_info = dict(provider_raw)
+    provider_info["seasons"] = provider_norm.get("seasons", [])
 
-    seasons = provider_norm.get("seasons") or []
-    has_eps = any((s.get("episodes") for s in seasons))
+    episodes_by_season = seasons_to_episodes_by_season(provider_norm)
+    total_eps = sum(len(v) for v in episodes_by_season.values())
 
-    if has_eps:
-        # Happy path – Dispatcharr already has episodes
-        return provider_norm
+    if total_eps > 0:
+        if LOG_LEVEL in ("DEBUG", "VERBOSE"):
+            log(
+                f"Dispatcharr provider-info episodes for series_id={series_id} "
+                f"({account_name}): {total_eps} episode(s) across "
+                f"{len(episodes_by_season)} season(s)"
+            )
+        return provider_info, episodes_by_season, False
 
-    # If fallback is globally disabled, stop here
+    # ------------------------------------------------------------------
+    # 2) No episodes from Dispatcharr – maybe XC fallback?
+    # ------------------------------------------------------------------
     if not ENABLE_XC_EPISODE_FALLBACK:
         log_debug(
             f"XC episode fallback disabled – keeping empty provider-info "
             f"for series_id={series_id} ({account_name})."
         )
-        return provider_norm
+        return provider_info, {}, False
 
-    # Step 2: XC fallback if we have credentials
     server_url = account.get("server_url") or ""
     xc_user = account.get("username") or account.get("user") or ""
     xc_pass = account.get("password") or account.get("pass") or ""
@@ -863,42 +969,91 @@ def get_normalized_provider_info_with_fallback(
             f"No XC credentials/server_url for account '{account_name}', "
             f"cannot fallback for series_id={series_id}"
         )
-        return provider_norm
+        return provider_info, {}, False
 
-    log_debug(
+    log(
         f"Dispatcharr provider-info had no episodes for series_id={series_id} "
-        f"({account_name}) – attempting XC get_series_info fallback."
+        f"({account_name}) – attempting XC get_series_info fallback "
+        f"(xc_series_id={xc_series_id})."
     )
 
-    xc_info = get_series_info_xc(server_url, xc_user, xc_pass, series_id)
+    if DRY_RUN:
+        log(
+            f"[dry-run] Would call XC get_series_info for xc_series_id={xc_series_id} "
+            f"(series_id={series_id})."
+        )
+        return provider_info, {}, False
+
+    xc_info = get_series_info_xc(server_url, xc_user, xc_pass, xc_series_id)
+
     if not isinstance(xc_info, dict) or "episodes" not in xc_info:
         status = xc_info.get("__status_code") if isinstance(xc_info, dict) else None
         if status:
             log_debug(
-                f"XC get_series_info for series_id={series_id} "
-                f"returned status={status} with no 'episodes' key."
+                f"XC get_series_info for xc_series_id={xc_series_id} "
+                f"(series_id={series_id}) returned status={status} "
+                f"with no 'episodes' key."
             )
         else:
             log(
-                f"XC get_series_info for series_id={series_id} returned no 'episodes' key."
+                f"XC get_series_info for xc_series_id={xc_series_id} "
+                f"(series_id={series_id}) returned no 'episodes' key."
             )
-        return provider_norm
+        return provider_info, {}, False
 
+    # Convert XC response to our provider-info-like structure and normalize
     provider_from_xc = build_provider_info_from_xc(xc_info)
-    seasons_xc = provider_from_xc.get("seasons") or []
-    if any((s.get("episodes") for s in seasons_xc)):
-        log_debug(
+    provider_norm_xc = normalize_provider_info(provider_from_xc)
+    episodes_by_season_xc = seasons_to_episodes_by_season(provider_norm_xc)
+    total_eps_xc = sum(len(v) for v in episodes_by_season_xc.values())
+
+    if total_eps_xc > 0:
+        log(
             f"XC fallback succeeded for series_id={series_id} ({account_name}) – "
-            f"using episodes from XC."
+            f"using {total_eps_xc} episode(s) from XC across "
+            f"{len(episodes_by_season_xc)} season(s)."
         )
-        return provider_from_xc
+        # For XC path, we can just treat the XC-normalized structure as provider_info
+        provider_info_xc = dict(provider_from_xc)
+        provider_info_xc["seasons"] = provider_norm_xc.get("seasons", [])
+        return provider_info_xc, episodes_by_season_xc, True
 
     # XC also gave nothing usable – fall back to original (empty) provider-info
     log_debug(
         f"XC fallback returned no usable episodes for series_id={series_id} "
         f"({account_name})."
     )
-    return provider_norm
+    return provider_info, {}, False
+
+
+def get_normalized_provider_info_with_fallback(
+    base: str,
+    token: str,
+    account: dict,
+    series: dict,
+) -> dict:
+    """
+    Backwards-compatible wrapper that returns only the normalized provider-info.
+
+    Internally uses fetch_series_with_fallback(), so if you only care about
+    the old behaviour (dict with "seasons"), you can keep calling this.
+    """
+    provider_info, episodes_by_season, _ = fetch_series_with_fallback(
+        base=base,
+        token=token,
+        account=account,
+        series=series,
+    )
+
+    # Ensure provider_info["seasons"] exists and matches episodes_by_season
+    seasons = provider_info.get("seasons") or []
+    if not seasons and episodes_by_season:
+        seasons = []
+        for s_num, eps in sorted(episodes_by_season.items()):
+            seasons.append({"number": s_num, "episodes": eps})
+        provider_info["seasons"] = seasons
+
+    return provider_info
 
 
 # ------------------------------------------------------------
@@ -1360,10 +1515,30 @@ def export_series(
     show_dir = series_dir / cat / show_fs
     mkdir(show_dir)
 
-    # Get provider-info, with XC fallback if Dispatcharr has no episodes
-    provider = get_normalized_provider_info_with_fallback(base, token, account, series)
-    series["_provider_info"] = provider
-    seasons = provider.get("seasons", [])
+    # Get provider-info + episodes, with XC fallback only if Dispatcharr has no episodes
+    provider_info, episodes_by_season, used_xc = fetch_series_with_fallback(
+        base=base,
+        token=token,
+        account=account,
+        series=series,
+    )
+
+    # Ensure provider_info has a "seasons" list built from episodes_by_season
+    seasons = provider_info.get("seasons") or []
+    if not seasons and episodes_by_season:
+        seasons = []
+        for s_num, eps in sorted(episodes_by_season.items()):
+            seasons.append({"number": s_num, "episodes": eps})
+        provider_info["seasons"] = seasons
+
+    if used_xc and LOG_LEVEL in ("DEBUG", "VERBOSE"):
+        total_eps = sum(len(v) for v in episodes_by_season.values())
+        log(
+            f"Series '{name}' ({account_name}) used XC fallback: "
+            f"{total_eps} episode(s) across {len(episodes_by_season)} season(s)."
+        )
+
+    series["_provider_info"] = provider_info
 
     tv_tmdb_data = None
     if ENABLE_NFO:
