@@ -535,22 +535,93 @@ def normalize_provider_info(info: dict) -> dict:
       ]
     }
 
-    Dispatcharr's provider-info (with include_episodes=true) returns a flat
-    "episodes" list with season_number / episode_number. Some XC formats
-    instead return a nested "seasons" list. We support both.
+    Supports:
+      - Dispatcharr provider-info with "episodes" as a dict keyed by season:
+        { "episodes": { "1": [ ... ], "2": [ ... ] } }
+      - Flat "episodes" list (older / alternative formats)
+      - XC-style "seasons" list (used by build_provider_info_from_xc)
     """
     if not info or not isinstance(info, dict):
         return {"seasons": []}
 
-    # --- Case 1: modern Dispatcharr format: flat "episodes" list ---
-    episodes_flat = info.get("episodes")
-    if isinstance(episodes_flat, list) and episodes_flat:
+    seasons: list[dict] = []
+
+    # --- Case 1: Dispatcharr-style episodes dict: { "1": [ep...], "2": [ep...] } ---
+    episodes_obj = info.get("episodes")
+    if isinstance(episodes_obj, dict) and episodes_obj:
+        for season_key, ep_list in episodes_obj.items():
+            if not isinstance(ep_list, list):
+                continue
+            try:
+                s_num = int(season_key)
+            except Exception:
+                # Fallback: try first episode's season_number
+                if ep_list and isinstance(ep_list[0], dict):
+                    s_num = ep_list[0].get("season_number") or 0
+                    try:
+                        s_num = int(s_num)
+                    except Exception:
+                        s_num = 0
+                else:
+                    s_num = 0
+            if not s_num:
+                continue
+
+            norm_eps: list[dict] = []
+            for e in ep_list:
+                if not isinstance(e, dict):
+                    continue
+
+                ep_num = (
+                    e.get("episode_number")
+                    or e.get("episode_num")
+                    or e.get("num")
+                    or 0
+                )
+                try:
+                    ep_num = int(ep_num)
+                except Exception:
+                    ep_num = 0
+                if not ep_num:
+                    continue
+
+                title = (
+                    e.get("title")
+                    or e.get("name")
+                    or e.get("episode_name")
+                    or f"Episode {ep_num}"
+                )
+
+                stream_id = e.get("id") or e.get("stream_id")
+                cont = e.get("container_extension") or e.get("container") or "m3u8"
+                direct = e.get("direct_url") or e.get("url") or ""
+
+                norm_eps.append(
+                    {
+                        "episode_num": ep_num,
+                        "title": title,
+                        "stream_id": stream_id,
+                        "container_extension": cont,
+                        "direct_url": direct,
+                        "raw": e,
+                    }
+                )
+
+            if norm_eps:
+                norm_eps.sort(key=lambda ep: ep.get("episode_num") or 0)
+                seasons.append({"number": s_num, "episodes": norm_eps})
+
+        if seasons:
+            seasons.sort(key=lambda s: s.get("number") or 0)
+            return {"seasons": seasons}
+
+    # --- Case 2: flat "episodes" list ---
+    if isinstance(episodes_obj, list) and episodes_obj:
         seasons_by_number: dict[int, list[dict]] = {}
-        for e in episodes_flat:
+        for e in episodes_obj:
             if not isinstance(e, dict):
                 continue
 
-            # Season / episode numbers
             s_num = (
                 e.get("season_number")
                 or e.get("season")
@@ -562,7 +633,7 @@ def normalize_provider_info(info: dict) -> dict:
             except Exception:
                 s_num = 0
             if not s_num:
-                s_num = 1  # default to Season 1 if missing
+                s_num = 1  # default Season 1
 
             ep_num = (
                 e.get("episode_number")
@@ -584,7 +655,6 @@ def normalize_provider_info(info: dict) -> dict:
                 or f"Episode {ep_num}"
             )
 
-            # For series we usually have an internal id + uuid
             stream_id = e.get("id") or e.get("stream_id")
             cont = e.get("container_extension") or e.get("container") or "m3u8"
             direct = e.get("direct_url") or e.get("url") or ""
@@ -599,22 +669,16 @@ def normalize_provider_info(info: dict) -> dict:
             }
             seasons_by_number.setdefault(s_num, []).append(norm_ep)
 
-        norm_seasons = []
         for s_num, eps in sorted(seasons_by_number.items(), key=lambda x: x[0]):
-            # sort episodes by episode_num just to be tidy
             eps_sorted = sorted(eps, key=lambda ep: ep.get("episode_num") or 0)
-            norm_seasons.append(
-                {
-                    "number": s_num,
-                    "episodes": eps_sorted,
-                }
-            )
-        return {"seasons": norm_seasons}
+            seasons.append({"number": s_num, "episodes": eps_sorted})
 
-    # --- Case 2: older XC-style format: nested "seasons" list ---
-    seasons = info.get("seasons") or info.get("Seasons") or []
+        return {"seasons": seasons}
+
+    # --- Case 3: XC-style "seasons" list ---
+    seasons_raw = info.get("seasons") or info.get("Seasons") or []
     norm_seasons = []
-    for s in seasons:
+    for s in seasons_raw:
         if not isinstance(s, dict):
             continue
         s_num = s.get("number") or s.get("season_number") or s.get("season", 0)
@@ -625,9 +689,9 @@ def normalize_provider_info(info: dict) -> dict:
         if not s_num:
             continue
 
-        episodes = s.get("episodes") or s.get("Episodes") or []
+        eps_raw = s.get("episodes") or s.get("Episodes") or []
         norm_eps = []
-        for e in episodes:
+        for e in eps_raw:
             if not isinstance(e, dict):
                 continue
             ep_num = (
@@ -663,7 +727,8 @@ def normalize_provider_info(info: dict) -> dict:
                 }
             )
 
-        norm_seasons.append({"number": s_num, "episodes": norm_eps})
+        if norm_eps:
+            norm_seasons.append({"number": s_num, "episodes": norm_eps})
 
     return {"seasons": norm_seasons}
 
