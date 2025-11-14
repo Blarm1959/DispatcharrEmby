@@ -44,7 +44,7 @@ HTTP_USER_AGENT="VOD2strm/1.0"
 #   "Strong 8K"     -> only this account
 #   "UK *"          -> accounts whose name starts with "UK "
 #   "UK *,Movies*"  -> multiple patterns
-XC_NAMES="*"
+XC_NAMES="Strong 8K"
 
 ########################################
 # Export toggles
